@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Text Extraction</title>
+</head>
+<body>
+    <h1>Image Text Extraction</h1>
+    <form action="http://127.0.0.1:5000/extract_text" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg">
+        <button type="submit">Extract Text</button>
+    </form>
+    <div id="result">
+        <!-- Results will be displayed here -->
+    </div>
+    
+    <script>
+        // JavaScript to display the extracted text
+        async function extractText() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            
+            const response = await fetch('/extract_text', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            
+            if (data.error) {
+                resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `<h2>Detected Text:</h2>
+                                       <pre>${data.detected_text}</pre>
+                                       <h2>Detected Languages:</h2>
+                                       <p>${data.detected_languages}</p>
+                                       <h2>Formatted Text:</h2>
+                                       <pre>${data.formatted_text}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
